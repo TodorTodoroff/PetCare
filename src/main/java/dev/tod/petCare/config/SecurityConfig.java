@@ -18,6 +18,8 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -34,18 +36,24 @@ public class SecurityConfig {
     private RSAKey rsaKey;
 
     @Bean
-    public AuthenticationManager authManager(UserDetailsService userDetailsService) {
-        var authProvider = new DaoAuthenticationProvider();
+    public AuthenticationManager authManager(UserDetailsService userDetailsService, PasswordEncoder encoder) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setPasswordEncoder(encoder);
         authProvider.setUserDetailsService(userDetailsService);
         return new ProviderManager(authProvider);
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         return new InMemoryUserDetailsManager(
                 User.withUsername("todor")
-                        .password("{noop}password")
-                        .authorities("read","write")
+                        .password(encoder.encode("password"))
+                        .authorities("read", "write")
                         .build()
         );
     }
@@ -55,7 +63,7 @@ public class SecurityConfig {
         return http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( auth -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/token").permitAll()
                         .anyRequest().authenticated()
                 )
