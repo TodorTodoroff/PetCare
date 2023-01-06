@@ -21,9 +21,9 @@ public class HomeController {
         return "This is SCOPE_read!";
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_write')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping("/write")
     public String write() {
-        return "This is SCOPE_write!";
+        return "This is SCOPE_ADMIN!";
     }
 }
