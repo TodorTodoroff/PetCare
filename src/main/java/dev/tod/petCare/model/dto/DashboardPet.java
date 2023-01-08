@@ -1,4 +1,6 @@
 package dev.tod.petCare.model.dto;
 
-public record DashboardPet() {
+import java.util.UUID;
+
+public record DashboardPet(String image, String name, String breed, UUID _id) {
 }
