@@ -1,56 +1,58 @@
 package dev.tod.petCare.services;
 
-import dev.tod.petCare.model.entities.UserEntity;
-import dev.tod.petCare.repository.UserRepository;
-import dev.tod.petCare.repository.UserRoleRepository;
+import dev.tod.petCare.model.auth.LoginRequest;
+import dev.tod.petCare.model.auth.LoginResponse;
+import dev.tod.petCare.model.user.PetCareUserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRoleRepository userRoleRepository;
+
     private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
 
-    public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       UserRoleRepository userRoleRepository,
-                       UserDetailsService userDetailsService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userRoleRepository = userRoleRepository;
+    public UserService(
+            UserDetailsService userDetailsService,
+            AuthenticationManager authenticationManager,
+            TokenService tokenService) {
         this.userDetailsService = userDetailsService;
-
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
     }
 
-    public void login(String userName) {
-        UserDetails userDetails =
-                userDetailsService.loadUserByUsername(userName);
+    public LoginResponse login(LoginRequest request) {
+        var userDetails =
+                (PetCareUserDetails) userDetailsService.loadUserByUsername(request.email());
 
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        userDetails.getPassword(),
-                        userDetails.getAuthorities()
-                );
+        Authentication authenticate = this.authenticationManager
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.email(),
+                                request.password()));
 
         SecurityContextHolder.
                 getContext().
-                setAuthentication(auth);
-    }
+                setAuthentication(authenticate);
 
+        String token = this.tokenService.generateToken(authenticate);
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setEmail(userDetails.getUsername());
+        loginResponse.setAccessToken(token);
+        loginResponse.set_id(userDetails.getId());
+
+        return loginResponse;
+    }
 
 
 }

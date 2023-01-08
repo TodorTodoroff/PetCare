@@ -23,9 +23,11 @@ public class PetCareUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
         return userRepository.
-                findByEmail(username).
-                map(this::map).
-                orElseThrow(() -> new UsernameNotFoundException("User with email " + username + " not found!"));
+                findByEmail(username)
+                .map(this::map)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException(
+                                "User with email " + username + " not found!"));
     }
 
     private UserDetails map(UserEntity userEntity) {
@@ -47,9 +49,9 @@ public class PetCareUserDetailsService implements UserDetailsService {
 
     private GrantedAuthority map(UserRoleEntity userRole) {
         return new SimpleGrantedAuthority(
-//                "ROLE_" +
-                userRole.
-                        getUserRole().name());
+                userRole
+                        .getUserRole()
+                        .name());
     }
 
 
