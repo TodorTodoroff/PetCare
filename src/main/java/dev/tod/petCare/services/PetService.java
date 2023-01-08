@@ -1,6 +1,5 @@
 package dev.tod.petCare.services;
 
-import dev.tod.petCare.model.dto.AllPetRecord;
 import dev.tod.petCare.model.dto.DashboardPet;
 import dev.tod.petCare.repository.PetRepository;
 import org.springframework.stereotype.Service;
@@ -16,8 +15,9 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    public AllPetRecord findDashboardPets() {
-        List<DashboardPet> collect = this.petRepository
+    public List<DashboardPet> findDashboardPets() {
+        return this
+                .petRepository
                 .findAll()
                 .stream()
                 .map(pet ->
@@ -28,6 +28,5 @@ public class PetService {
                                 pet.getId())
                 )
                 .toList();
-        return new AllPetRecord(collect);
     }
 }
