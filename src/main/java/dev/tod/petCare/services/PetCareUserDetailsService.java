@@ -2,7 +2,6 @@ package dev.tod.petCare.services;
 
 
 import dev.tod.petCare.model.entities.UserEntity;
-import dev.tod.petCare.model.entities.UserRoleEntity;
 import dev.tod.petCare.model.user.PetCareUserDetails;
 import dev.tod.petCare.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,21 +37,11 @@ public class PetCareUserDetailsService implements UserDetailsService {
                 userEntity.getEmail(),
                 userEntity.getFirstName(),
                 userEntity.getLastName(),
-                userEntity.
-                        getUserRoles().
-                        stream().
-                        map(this::map)
-                        .toList()
+                userEntity.getUserRoles()
         );
     }
 
 
-    private GrantedAuthority map(UserRoleEntity userRole) {
-        return new SimpleGrantedAuthority(
-                userRole
-                        .getUserRole()
-                        .name());
-    }
 
 
 }

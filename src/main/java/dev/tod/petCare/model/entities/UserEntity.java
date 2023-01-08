@@ -1,10 +1,15 @@
 package dev.tod.petCare.model.entities;
 
+import dev.tod.petCare.model.enums.UserRoleEnum;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -26,79 +31,10 @@ public class UserEntity {
 
     private boolean isActive;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_roles")
+    private UserRoleEnum userRoles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<UserRoleEntity> userRoles = new ArrayList<>();
-
-    public String getEmail() {
-        return email;
-    }
-
-    public UserEntity setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public UserEntity setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public UserEntity setFirstName(String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UserEntity setLastName(String lastName) {
-        this.lastName = lastName;
-        return this;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public UserEntity setActive(boolean active) {
-        isActive = active;
-        return this;
-    }
-
-    public List<UserRoleEntity> getUserRoles() {
-        return userRoles;
-    }
-
-    public String getUserRolesString() {
-        return userRoles.toString().
-                replace("[", "").
-                replace("]", "");
-    }
-
-    public UserEntity setUserRoles(List<UserRoleEntity> userRoles) {
-        this.userRoles = userRoles;
-        return this;
-    }
-
-    public UserEntity addRole(UserRoleEntity userRole) {
-        this.userRoles.add(userRole);
-        return this;
-    }
-
-    public UserEntity removeRole(UserRoleEntity userRole){
-        this.userRoles.remove(userRole);
-        return this;
-    }
 
     public Long getId() {
         return id;
@@ -108,18 +44,52 @@ public class UserEntity {
         this.id = id;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", isActive=" + isActive +
-                ", userRoles=" + userRoles +
-                '}';
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public UserRoleEnum getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(UserRoleEnum userRoles) {
+        this.userRoles = userRoles;
     }
 }
 

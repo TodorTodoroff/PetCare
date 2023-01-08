@@ -1,9 +1,12 @@
 package dev.tod.petCare.model.user;
 
+import dev.tod.petCare.model.enums.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PetCareUserDetails implements UserDetails {
 
@@ -12,7 +15,7 @@ public class PetCareUserDetails implements UserDetails {
     private final String username;
     private final String firstName;
     private final String lastName;
-    private final Collection<GrantedAuthority> authorities;
+    private final UserRoleEnum authorities;
 
     public PetCareUserDetails(
             Long id,
@@ -20,7 +23,7 @@ public class PetCareUserDetails implements UserDetails {
             String username,
             String firstName,
             String lastName,
-            Collection<GrantedAuthority> authorities) {
+            UserRoleEnum authorities) {
         this.id = id;
         this.password = password;
         this.username = username;
@@ -58,7 +61,7 @@ public class PetCareUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return List.of(new SimpleGrantedAuthority(this.authorities.name()));
     }
 
     @Override
