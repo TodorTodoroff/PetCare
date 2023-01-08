@@ -27,7 +27,9 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest loginRequest
     ) throws AuthenticationException {
-        LOG.info("User: " + loginRequest.email() + " logged!");
+
+        LOG.info("User: " + loginRequest.email() + " attempted login");
+
         return ResponseEntity
                 .ok(this.userService.login(loginRequest));
     }
@@ -36,7 +38,9 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest registerRequest
     ) throws AuthenticationException{
-        LOG.info("User: " + registerRequest.email() + " registered!");
+
+        LOG.info("User: " + registerRequest.email() + " attempted register!");
+
         return ResponseEntity
                 .ok(this.userService.register(registerRequest));
     }

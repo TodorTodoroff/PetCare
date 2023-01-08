@@ -49,8 +49,8 @@ public class UserService {
                 .loadUserByUsername(request.email());
 
         Authentication authentication = authenticateRequest(
-                petCareUserDetails.getUsername(),
-                petCareUserDetails.getPassword());
+                request.email(),
+                request.password());
 
         return new LoginResponse(
                 petCareUserDetails.getId(),
@@ -72,7 +72,7 @@ public class UserService {
                 .userRoles(UserRoleEnum.USER)
                 .build();
 
-        UserEntity save = this.userRepository.save(user);
+        this.userRepository.save(user);
 
         Authentication authentication = authenticateRequest(request.email(), request.password());
 
